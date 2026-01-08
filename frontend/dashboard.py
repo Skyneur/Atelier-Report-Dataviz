@@ -280,7 +280,11 @@ with tab1:
     # Récupération des données
     top_produits = appeler_api("/kpi/produits/top", params={'limite': nb_produits, 'tri_par': critere_tri})
     df_produits = pd.DataFrame(top_produits)
-    
+    labels_criteres = {
+        'ca': 'CA',
+        'profit': 'Profit',
+        'quantite': 'Quantité'
+    }
     # Graphique en barres horizontales
     fig_produits = px.bar(
         df_produits,
@@ -288,7 +292,9 @@ with tab1:
         y='produit',
         color='categorie',
         orientation='h',
-        title=f"Top {nb_produits} Produits par {{'ca': 'CA', 'profit': 'Profit', 'quantite': 'Quantité'}[critere_tri]}",
+        title=f"Top {nb_produits} Produits par {labels_criteres[critere_tri]}",
+
+        # title=f"Top {nb_produits} Produits par {{'ca': 'CA', 'profit': 'Profit', 'quantite': 'Quantité'}[critere_tri]}",
         labels={
             'ca': 'Chiffre d\'affaires (€)',
             'profit': 'Profit (€)',
