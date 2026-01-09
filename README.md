@@ -104,17 +104,7 @@ streamlit run frontend/dashboard.py
 
 ✅ Le dashboard sera accessible sur **http://localhost:8501**
 
----
 
-## 🧪 Exécuter les tests
-
-```bash
-# Tests unitaires de l'API
-pytest tests/test_api.py -v
-
-# Tests avec couverture de code
-pytest tests/test_api.py --cov=backend --cov-report=html
-```
 
 ---
 
@@ -310,31 +300,3 @@ st.plotly_chart(fig)
 - [10 minutes to pandas](https://pandas.pydata.org/docs/user_guide/10min.html)
 
 ---
-
-## 🤝 Contribution
-
-Pour améliorer ce projet :
-1. Fork le projet
-2. Créez une branche (`git checkout -b feature/amelioration`)
-3. Commitez vos changements (`git commit -m 'Ajout fonctionnalité'`)
-4. Push vers la branche (`git push origin feature/amelioration`)
-5. Ouvrez une Pull Request
-
----
-
-## 📝 Licence
-
-Projet pédagogique - Libre d'utilisation pour l'enseignement
-
----
-
-## 👨‍🏫 Support
-
-Pour toute question :
-- 📧 Contactez votre formateur
-- 💬 Utilisez le forum de discussion
-- 📚 Consultez la documentation officielle
-
----
-
-**Bon apprentissage ! 🚀**

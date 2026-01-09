@@ -12,6 +12,7 @@ import requests
 import pandas as pd
 from datetime import datetime, timedelta
 import time
+import os
 
 # === CONFIGURATION PAGE ===
 st.set_page_config(
@@ -61,7 +62,9 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # === CONFIGURATION API ===
-API_URL = "http://localhost:8000"  # URL de l'API FastAPI
+# Utilise la variable d'environnement API_URL si définie (pour Docker),
+# sinon utilise localhost (pour développement local)
+API_URL = os.getenv("API_URL", "http://localhost:8000")
 
 # === FONCTIONS HELPERS ===
 
@@ -85,7 +88,8 @@ def appeler_api(endpoint: str, params: dict = None):
         return response.json()
     except requests.exceptions.ConnectionError:
         st.error("❌ **Impossible de se connecter à l'API**")
-        st.info("💡 Vérifiez que l'API est démarrée : `python backend/main.py`")
+        st.info(f"💡 Vérifiez que l'API est démarrée sur: {API_URL}")
+        st.info("📝 Commande: `python backend/main.py` ou `docker-compose up`")
         st.stop()
     except requests.exceptions.Timeout:
         st.error("⏱️ **Timeout : l'API met trop de temps à répondre**")
@@ -115,7 +119,7 @@ with st.spinner("🔄 Connexion à l'API..."):
         info_api = appeler_api("/")
         st.success(f"✅ Connecté à l'API - Dataset : {info_api['dataset']} ({info_api['nb_lignes']} lignes)")
     except:
-        st.error("❌ L'API n'est pas accessible. Démarrez-la avec `python backend/main.py`")
+        st.error(f"❌ L'API n'est pas accessible sur {API_URL}")
         st.stop()
 
 # === HEADER ===
@@ -280,11 +284,14 @@ with tab1:
     # Récupération des données
     top_produits = appeler_api("/kpi/produits/top", params={'limite': nb_produits, 'tri_par': critere_tri})
     df_produits = pd.DataFrame(top_produits)
+    
+    # Dictionnaire des labels pour le titre du graphique
     labels_criteres = {
         'ca': 'CA',
         'profit': 'Profit',
         'quantite': 'Quantité'
     }
+    
     # Graphique en barres horizontales
     fig_produits = px.bar(
         df_produits,
@@ -293,8 +300,6 @@ with tab1:
         color='categorie',
         orientation='h',
         title=f"Top {nb_produits} Produits par {labels_criteres[critere_tri]}",
-
-        # title=f"Top {nb_produits} Produits par {{'ca': 'CA', 'profit': 'Profit', 'quantite': 'Quantité'}[critere_tri]}",
         labels={
             'ca': 'Chiffre d\'affaires (€)',
             'profit': 'Profit (€)',
