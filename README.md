@@ -215,28 +215,6 @@ curl "http://localhost:8000/kpi/clients?limite=10"
 **Période** : 2014-2017
 **Taille** : ~10 000 lignes
 
----
-
-## 🎓 Exercices pour les élèves
-
-### **Atelier 1 - KPI de base** (30 min)
-1. Calculer le CA total
-2. Calculer le panier moyen
-3. Afficher le CA par mois
-4. Trouver le top 5 des produits
-
-### **Atelier 2 - Analyse business** (45 min)
-1. Quelle catégorie est la plus rentable ?
-2. Quels produits génèrent du CA mais peu de profit ?
-3. Quels mois sont les plus performants ?
-4. Quelle région a le plus de clients ?
-
-### **Atelier 3 - Dashboard final** (60 min)
-1. Créer un dashboard avec :
-   - 1 KPI principal
-   - 2 graphiques de votre choix
-   - 1 tableau filtrable
-   - Filtres : date, catégorie, région
 
 ---
 
