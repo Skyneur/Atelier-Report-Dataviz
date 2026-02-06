@@ -24,10 +24,16 @@ Ce projet permet d'apprendre :
 - 💵 Profit total
 - 📈 Marge moyenne
 
+### 🔹 KPI Décisionnels ✨ NOUVEAU
+- 📅 **Comparaison temporelle** : Évolution CA mois/mois avec variation en %
+- 🔁 **Fidélité clients** : Taux de récurrence, part CA récurrent, délai moyen entre achats
+- 💹 **Rentabilité produit** : Marge par produit, top/flop performers
+- 🧭 **Storytelling automatique** : Alertes et recommandations basées sur les données
+
 ### 🔹 KPI Produits
 - 🏆 Top 10 produits par CA/Profit/Quantité
 - 📦 CA par catégorie
-- 💹 Marge par produit
+- 💹 Marge par produit (top et bottom)
 - ⚠️ Produits les moins rentables
 
 ### 🔹 KPI Clients
@@ -58,6 +64,15 @@ superstore-bi/
 ├── frontend/
 │   └── dashboard.py         # Dashboard Streamlit
 │
+├── frontend-react/          # Dashboard React TypeScript (nouvelle version)
+│   ├── src/
+│   │   ├── components/      # Composants React
+│   │   ├── services/        # Services API
+│   │   ├── App.tsx          # Application principale
+│   │   └── types.ts         # Types TypeScript
+│   ├── package.json
+│   └── vite.config.ts
+│
 ├── tests/
 │   └── test_api.py          # Tests unitaires
 │
@@ -69,10 +84,27 @@ superstore-bi/
 
 ## 🚀 Installation et démarrage
 
+### Méthode rapide (avec script) 🎯
+
+```bash
+# Cloner ou créer le projet
+cd Atelier-Report-Dataviz
+
+# Lancer l'application complète (API + Frontend React)
+./start.sh
+```
+
+✅ L'API sera accessible sur **http://localhost:8000**  
+✅ Le dashboard React sera accessible sur **http://localhost:3000**
+
+### Méthode manuelle
+
 ### 1️⃣ Prérequis
 
 - Python 3.8+ installé
 - pip installé
+- Node.js 18+ installé (pour frontend React)
+- npm installé (pour frontend React)
 
 ### 2️⃣ Installation des dépendances
 
@@ -95,7 +127,9 @@ python backend/main.py
 ✅ L'API sera accessible sur **http://localhost:8000**
 📚 Documentation Swagger : **http://localhost:8000/docs**
 
-### 4️⃣ Démarrer le Dashboard Streamlit
+### 4️⃣ Démarrer le Dashboard
+
+**Option A - Streamlit (Python)**
 
 ```bash
 # Dans un second terminal
@@ -103,6 +137,17 @@ streamlit run frontend/dashboard.py
 ```
 
 ✅ Le dashboard sera accessible sur **http://localhost:8501**
+
+**Option B - React TypeScript (recommandé)**
+
+```bash
+# Dans un second terminal
+cd frontend-react
+npm install
+npm run dev
+```
+
+✅ Le dashboard sera accessible sur **http://localhost:3000**
 
 
 
@@ -166,7 +211,20 @@ curl http://localhost:8000/kpi/geographique
 ```bash
 curl "http://localhost:8000/kpi/clients?limite=10"
 ```
+#### **6. Fidélité clients** ✨ NOUVEAU
+```bash
+curl "http://localhost:8000/kpi/clients/fidelite"
+```
 
+#### **7. Marge par produit** ✨ NOUVEAU
+```bash
+curl "http://localhost:8000/kpi/produits/marge?limite=10"
+```
+
+#### **8. Comparaison temporelle** ✨ NOUVEAU
+```bash
+curl "http://localhost:8000/kpi/temporel/comparaison"
+```
 ---
 
 ## 🎨 Fonctionnalités du Dashboard
@@ -176,6 +234,7 @@ curl "http://localhost:8000/kpi/clients?limite=10"
 - 📦 Catégorie
 - 🌍 Région
 - 👥 Segment client
+- 🔄 Tous les KPI sont filtrables dynamiquement
 
 ### ✅ Visualisations Plotly
 - 📊 Graphiques en barres interactifs
@@ -188,10 +247,23 @@ curl "http://localhost:8000/kpi/clients?limite=10"
 - Mise en forme automatique (€, %, nombres)
 - Organisation claire
 
+### ✅ Storytelling Décisionnel ✨ NOUVEAU
+- 📈 Alertes automatiques sur progression/régression CA
+- 💹 Recommandations sur produits à forte/faible marge
+- 🔁 Insights sur fidélisation client
+- 🎯 Opportunités business détectées automatiquement
+- ⚠️ Signaux de risque identifiés
+
+### ✅ Data Quality
+- 🧹 Nettoyage automatique des valeurs aberrantes
+- 🔒 Gestion des NaN et valeurs nulles
+- ✅ Validation des bornes (discount 0-100%, quantité >= 0)
+- 🛡️ Division sécurisée (pas de division par zéro)
+
 ### ✅ Tabs organisés
-- 🏆 Produits
+- 🏆 Produits (avec analyse marge)
 - 📦 Catégories
-- 📅 Temporel
+- 📅 Temporel (avec comparaison M/M)
 - 🌍 Géographique
 
 ---

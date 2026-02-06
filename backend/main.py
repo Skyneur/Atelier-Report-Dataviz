@@ -57,11 +57,22 @@ def load_data() -> pd.DataFrame:
         df.columns = df.columns.str.strip()
         
         # Conversion des dates au format datetime
-        df['Order Date'] = pd.to_datetime(df['Order Date'])
-        df['Ship Date'] = pd.to_datetime(df['Ship Date'])
-        
+        df['Order Date'] = pd.to_datetime(df['Order Date'], errors='coerce')
+        df['Ship Date'] = pd.to_datetime(df['Ship Date'], errors='coerce')
+
+        # Normalisation des colonnes numeriques (valeurs non conformes -> NaN)
+        for col in ['Sales', 'Profit', 'Quantity', 'Discount']:
+            if col in df.columns:
+                df[col] = pd.to_numeric(df[col], errors='coerce')
+
+        # Normalisation des bornes attendues
+        if 'Discount' in df.columns:
+            df['Discount'] = df['Discount'].clip(lower=0, upper=1)
+        if 'Quantity' in df.columns:
+            df['Quantity'] = df['Quantity'].clip(lower=0)
+
         # Suppression des lignes avec valeurs manquantes critiques
-        df = df.dropna(subset=['Order ID', 'Customer ID', 'Sales'])
+        df = df.dropna(subset=['Order ID', 'Customer ID', 'Sales', 'Order Date', 'Quantity'])
         
         logger.info(f"✅ Dataset chargé : {len(df)} commandes")
         return df
@@ -101,6 +112,32 @@ class CategoriePerf(BaseModel):
     nb_commandes: int
     marge_pct: float
 
+class ProduitMarge(BaseModel):
+    """Modèle pour la marge par produit"""
+    produit: str
+    categorie: str
+    ca: float
+    profit: float
+    marge_pct: float
+
+class EvolutionComparaison(BaseModel):
+    """Modèle pour les comparaisons temporelles"""
+    periode: str
+    ca: float
+    ca_prec: float
+    evolution_pct: float
+
+class FideliteClients(BaseModel):
+    """Modèle pour les indicateurs de fidelite"""
+    total_clients: int
+    clients_recurrents: int
+    clients_nouveaux: int
+    repeat_rate_pct: float
+    avg_orders_per_client: float
+    ca_clients_recurrents: float
+    share_ca_recurrent_pct: float
+    avg_days_between_orders: float
+
 # === FONCTIONS UTILITAIRES ===
 
 def filtrer_dataframe(
@@ -129,9 +166,13 @@ def filtrer_dataframe(
     
     # Filtre par date
     if date_debut:
-        df_filtered = df_filtered[df_filtered['Order Date'] >= date_debut]
+        date_debut_dt = pd.to_datetime(date_debut, errors='coerce')
+        if pd.notna(date_debut_dt):
+            df_filtered = df_filtered[df_filtered['Order Date'] >= date_debut_dt]
     if date_fin:
-        df_filtered = df_filtered[df_filtered['Order Date'] <= date_fin]
+        date_fin_dt = pd.to_datetime(date_fin, errors='coerce')
+        if pd.notna(date_fin_dt):
+            df_filtered = df_filtered[df_filtered['Order Date'] <= date_fin_dt]
     
     # Filtre par catégorie
     if categorie and categorie != "Toutes":
@@ -146,6 +187,12 @@ def filtrer_dataframe(
         df_filtered = df_filtered[df_filtered['Segment'] == segment]
     
     return df_filtered
+
+def safe_divide(numerateur: float, denominateur: float) -> float:
+    """Division sure pour eviter les inf et NaN"""
+    if denominateur and denominateur != 0:
+        return numerateur / denominateur
+    return 0.0
 
 # === ENDPOINTS API ===
 
@@ -219,7 +266,12 @@ def get_kpi_globaux(
 @app.get("/kpi/produits/top", tags=["KPI"])
 def get_top_produits(
     limite: int = Query(10, ge=1, le=50, description="Nombre de produits à retourner"),
-    tri_par: str = Query("ca", regex="^(ca|profit|quantite)$", description="Critère de tri")
+    tri_par: str = Query("ca", regex="^(ca|profit|quantite)$", description="Critère de tri"),
+    date_debut: Optional[str] = Query(None, description="Date debut (YYYY-MM-DD)"),
+    date_fin: Optional[str] = Query(None, description="Date fin (YYYY-MM-DD)"),
+    categorie: Optional[str] = Query(None, description="Categorie produit"),
+    region: Optional[str] = Query(None, description="Region"),
+    segment: Optional[str] = Query(None, description="Segment client")
 ):
     """
     🏆 TOP PRODUITS
@@ -229,8 +281,11 @@ def get_top_produits(
     - profit : Profit
     - quantite : Quantité vendue
     """
+    # Application des filtres
+    df_filtered = filtrer_dataframe(df, date_debut, date_fin, categorie, region, segment)
+
     # Agrégation par produit
-    produits = df.groupby(['Product Name', 'Category']).agg({
+    produits = df_filtered.groupby(['Product Name', 'Category']).agg({
         'Sales': 'sum',
         'Quantity': 'sum',
         'Profit': 'sum'
@@ -261,7 +316,13 @@ def get_top_produits(
     return result
 
 @app.get("/kpi/categories", tags=["KPI"])
-def get_performance_categories():
+def get_performance_categories(
+    date_debut: Optional[str] = Query(None, description="Date debut (YYYY-MM-DD)"),
+    date_fin: Optional[str] = Query(None, description="Date fin (YYYY-MM-DD)"),
+    categorie: Optional[str] = Query(None, description="Categorie produit"),
+    region: Optional[str] = Query(None, description="Region"),
+    segment: Optional[str] = Query(None, description="Segment client")
+):
     """
     📦 PERFORMANCE PAR CATÉGORIE
     
@@ -271,8 +332,11 @@ def get_performance_categories():
     - Nombre de commandes
     - Marge (%)
     """
+    # Application des filtres
+    df_filtered = filtrer_dataframe(df, date_debut, date_fin, categorie, region, segment)
+
     # Agrégation par catégorie
-    categories = df.groupby('Category').agg({
+    categories = df_filtered.groupby('Category').agg({
         'Sales': 'sum',
         'Profit': 'sum',
         'Order ID': 'nunique'
@@ -291,7 +355,12 @@ def get_performance_categories():
 
 @app.get("/kpi/temporel", tags=["KPI"])
 def get_evolution_temporelle(
-    periode: str = Query('mois', regex='^(jour|mois|annee)$', description="Granularité temporelle")
+    periode: str = Query('mois', regex='^(jour|mois|annee)$', description="Granularité temporelle"),
+    date_debut: Optional[str] = Query(None, description="Date debut (YYYY-MM-DD)"),
+    date_fin: Optional[str] = Query(None, description="Date fin (YYYY-MM-DD)"),
+    categorie: Optional[str] = Query(None, description="Categorie produit"),
+    region: Optional[str] = Query(None, description="Region"),
+    segment: Optional[str] = Query(None, description="Segment client")
 ):
     """
     📈 ÉVOLUTION TEMPORELLE
@@ -299,7 +368,7 @@ def get_evolution_temporelle(
     Analyse l'évolution du CA, profit et commandes dans le temps
     Granularités disponibles : jour, mois, annee
     """
-    df_temp = df.copy()
+    df_temp = filtrer_dataframe(df, date_debut, date_fin, categorie, region, segment)
     
     # Création de la colonne période selon la granularité
     if periode == 'jour':
@@ -325,7 +394,13 @@ def get_evolution_temporelle(
     return temporal.to_dict('records')
 
 @app.get("/kpi/geographique", tags=["KPI"])
-def get_performance_geographique():
+def get_performance_geographique(
+    date_debut: Optional[str] = Query(None, description="Date debut (YYYY-MM-DD)"),
+    date_fin: Optional[str] = Query(None, description="Date fin (YYYY-MM-DD)"),
+    categorie: Optional[str] = Query(None, description="Categorie produit"),
+    region: Optional[str] = Query(None, description="Region"),
+    segment: Optional[str] = Query(None, description="Segment client")
+):
     """
     🌍 PERFORMANCE GÉOGRAPHIQUE
     
@@ -335,7 +410,9 @@ def get_performance_geographique():
     - Nombre de clients
     - Nombre de commandes
     """
-    geo = df.groupby('Region').agg({
+    df_filtered = filtrer_dataframe(df, date_debut, date_fin, categorie, region, segment)
+
+    geo = df_filtered.groupby('Region').agg({
         'Sales': 'sum',
         'Profit': 'sum',
         'Customer ID': 'nunique',
@@ -349,7 +426,12 @@ def get_performance_geographique():
 
 @app.get("/kpi/clients", tags=["KPI"])
 def get_analyse_clients(
-    limite: int = Query(10, ge=1, le=100, description="Nombre de top clients")
+    limite: int = Query(10, ge=1, le=100, description="Nombre de top clients"),
+    date_debut: Optional[str] = Query(None, description="Date debut (YYYY-MM-DD)"),
+    date_fin: Optional[str] = Query(None, description="Date fin (YYYY-MM-DD)"),
+    categorie: Optional[str] = Query(None, description="Categorie produit"),
+    region: Optional[str] = Query(None, description="Region"),
+    segment: Optional[str] = Query(None, description="Segment client")
 ):
     """
     👥 ANALYSE CLIENTS
@@ -359,8 +441,11 @@ def get_analyse_clients(
     - Statistiques de récurrence
     - Analyse par segment
     """
+    # Application des filtres
+    df_filtered = filtrer_dataframe(df, date_debut, date_fin, categorie, region, segment)
+
     # Top clients
-    clients = df.groupby('Customer ID').agg({
+    clients = df_filtered.groupby('Customer ID').agg({
         'Sales': 'sum',
         'Profit': 'sum',
         'Order ID': 'nunique',
@@ -381,7 +466,7 @@ def get_analyse_clients(
     }
     
     # Analyse par segment
-    segments = df.groupby('Segment').agg({
+    segments = df_filtered.groupby('Segment').agg({
         'Sales': 'sum',
         'Profit': 'sum',
         'Customer ID': 'nunique'
@@ -392,6 +477,134 @@ def get_analyse_clients(
         "top_clients": top_clients.to_dict('records'),
         "recurrence": recurrence,
         "segments": segments.to_dict('records')
+    }
+
+@app.get("/kpi/produits/marge", tags=["KPI"])
+def get_marge_produits(
+    limite: int = Query(10, ge=1, le=50, description="Nombre de produits par liste"),
+    date_debut: Optional[str] = Query(None, description="Date debut (YYYY-MM-DD)"),
+    date_fin: Optional[str] = Query(None, description="Date fin (YYYY-MM-DD)"),
+    categorie: Optional[str] = Query(None, description="Categorie produit"),
+    region: Optional[str] = Query(None, description="Region"),
+    segment: Optional[str] = Query(None, description="Segment client")
+):
+    """
+    💹 MARGE PAR PRODUIT
+
+    Retourne les produits les plus et moins rentables selon la marge (%)
+    """
+    df_filtered = filtrer_dataframe(df, date_debut, date_fin, categorie, region, segment)
+
+    produits = df_filtered.groupby(['Product Name', 'Category']).agg({
+        'Sales': 'sum',
+        'Profit': 'sum'
+    }).reset_index()
+
+    produits = produits[produits['Sales'] > 0]
+    produits['marge_pct'] = (produits['Profit'] / produits['Sales'] * 100).replace([float('inf'), -float('inf')], 0)
+
+    produits = produits.sort_values('marge_pct', ascending=False)
+
+    def formatter(df_slice: pd.DataFrame) -> List[Dict[str, Any]]:
+        result = []
+        for _, row in df_slice.iterrows():
+            result.append({
+                "produit": row['Product Name'],
+                "categorie": row['Category'],
+                "ca": round(row['Sales'], 2),
+                "profit": round(row['Profit'], 2),
+                "marge_pct": round(row['marge_pct'], 2)
+            })
+        return result
+
+    top = formatter(produits.head(limite))
+    bottom = formatter(produits.tail(limite).sort_values('marge_pct', ascending=True))
+
+    return {
+        "top": top,
+        "bottom": bottom
+    }
+
+@app.get("/kpi/temporel/comparaison", tags=["KPI"])
+def get_comparaison_temporelle(
+    date_debut: Optional[str] = Query(None, description="Date debut (YYYY-MM-DD)"),
+    date_fin: Optional[str] = Query(None, description="Date fin (YYYY-MM-DD)"),
+    categorie: Optional[str] = Query(None, description="Categorie produit"),
+    region: Optional[str] = Query(None, description="Region"),
+    segment: Optional[str] = Query(None, description="Segment client")
+):
+    """
+    📅 COMPARAISON MOIS/MOIS
+
+    Retourne l'evolution du CA vs mois precedent
+    """
+    df_temp = filtrer_dataframe(df, date_debut, date_fin, categorie, region, segment)
+    df_temp = df_temp.copy()
+    df_temp['periode'] = df_temp['Order Date'].dt.strftime('%Y-%m')
+
+    temporal = df_temp.groupby('periode').agg({
+        'Sales': 'sum'
+    }).reset_index()
+
+    temporal.columns = ['periode', 'ca']
+    temporal = temporal.sort_values('periode')
+    temporal['ca_prec'] = temporal['ca'].shift(1).fillna(0)
+    temporal['evolution_pct'] = temporal.apply(lambda row: round(safe_divide(row['ca'] - row['ca_prec'], row['ca_prec']) * 100, 2), axis=1)
+
+    series = temporal.to_dict('records')
+    latest = series[-1] if series else {"periode": None, "ca": 0, "ca_prec": 0, "evolution_pct": 0}
+
+    return {
+        "series": series,
+        "latest": latest
+    }
+
+@app.get("/kpi/clients/fidelite", tags=["KPI"])
+def get_fidelite_clients(
+    date_debut: Optional[str] = Query(None, description="Date debut (YYYY-MM-DD)"),
+    date_fin: Optional[str] = Query(None, description="Date fin (YYYY-MM-DD)"),
+    categorie: Optional[str] = Query(None, description="Categorie produit"),
+    region: Optional[str] = Query(None, description="Region"),
+    segment: Optional[str] = Query(None, description="Segment client")
+):
+    """
+    🔁 FIDELITE CLIENTS
+
+    Indicateurs de recurrence et poids des clients recurrents
+    """
+    df_filtered = filtrer_dataframe(df, date_debut, date_fin, categorie, region, segment)
+
+    clients = df_filtered.groupby('Customer ID').agg({
+        'Order ID': 'nunique',
+        'Sales': 'sum',
+        'Order Date': 'max'
+    }).reset_index()
+
+    total_clients = len(clients)
+    clients_recurrents = len(clients[clients['Order ID'] > 1])
+    clients_nouveaux = total_clients - clients_recurrents
+    repeat_rate_pct = round(safe_divide(clients_recurrents, total_clients) * 100, 2)
+    avg_orders_per_client = round(clients['Order ID'].mean(), 2) if total_clients > 0 else 0
+
+    ca_clients_recurrents = clients.loc[clients['Order ID'] > 1, 'Sales'].sum()
+    ca_total = clients['Sales'].sum()
+    share_ca_recurrent_pct = round(safe_divide(ca_clients_recurrents, ca_total) * 100, 2)
+
+    # Intervalle moyen entre commandes par client
+    orders = df_filtered[['Customer ID', 'Order Date']].dropna()
+    orders = orders.sort_values(['Customer ID', 'Order Date'])
+    orders['delta'] = orders.groupby('Customer ID')['Order Date'].diff().dt.days
+    avg_days_between_orders = round(orders['delta'].dropna().mean(), 2) if not orders['delta'].dropna().empty else 0
+
+    return {
+        "total_clients": int(total_clients),
+        "clients_recurrents": int(clients_recurrents),
+        "clients_nouveaux": int(clients_nouveaux),
+        "repeat_rate_pct": repeat_rate_pct,
+        "avg_orders_per_client": avg_orders_per_client,
+        "ca_clients_recurrents": round(ca_clients_recurrents, 2),
+        "share_ca_recurrent_pct": share_ca_recurrent_pct,
+        "avg_days_between_orders": avg_days_between_orders
     }
 
 @app.get("/filters/valeurs", tags=["Filtres"])
