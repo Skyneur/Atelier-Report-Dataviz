@@ -60,12 +60,18 @@ export const TemporelTab: React.FC<TemporelTabProps> = ({ temporal, granularite,
           font: { family: 'Inter, sans-serif', color: '#ffffff' },
           paper_bgcolor: 'rgba(0,0,0,0)',
           plot_bgcolor: 'rgba(0,0,0,0)',
-          xaxis: { 
-            title: '', 
-            color: '#b2b4b8', 
+          xaxis: {
+            title: '',
+            color: '#b2b4b8',
             gridcolor: 'rgba(255,255,255,0.06)',
             showgrid: false,
-            tickfont: { family: 'JetBrains Mono, monospace' }
+            tickfont: { family: 'JetBrains Mono, monospace' },
+            showspikes: true,
+            spikecolor: 'rgba(255,255,255,0.25)',
+            spikethickness: 1,
+            spikedash: 'dot',
+            spikemode: 'across',
+            spikesnap: 'cursor'
           },
           yaxis: { 
             title: '', 
