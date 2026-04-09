@@ -18,7 +18,7 @@ export const KPIDecision: React.FC<KPIDecisionProps> = ({ comparaison, fidelite,
     <div className="kpi-card" style={{height: '100%'}}>
       <h3 style={{fontSize:'1rem', marginBottom:'20px', display:'flex', alignItems:'center', gap:'10px'}}>
         <span style={{width:'8px', height:'8px', background:'var(--accent-primary)', borderRadius:'50%', display:'inline-block'}}></span>
-        Market Insights
+        Indicateurs Clés
       </h3>
 
       <motion.div

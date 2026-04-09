@@ -49,7 +49,7 @@ export const TemporelTab: React.FC<TemporelTabProps> = ({ temporal, granularite,
           {
             type: 'scatter',
             mode: 'lines',
-            name: 'Trend (SMA)',
+            name: 'Tendance (SMA)',
             x: temporal.map(t => t.periode),
             y: sma,
             line: { color: 'rgba(255, 200, 80, 0.85)', width: 2, dash: 'dash' },

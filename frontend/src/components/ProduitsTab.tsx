@@ -49,7 +49,7 @@ export const ProduitsTab: React.FC<ProduitsTabProps> = ({ produits, marge, crite
             }
           ]}
           layout={{
-            title: { text: `TOP 10 PERFORMERS (${labels[critere].toUpperCase()})`, font: { color: '#ffffff', family: 'Inter, sans-serif' } },
+            title: { text: `TOP 10 — ${labels[critere].toUpperCase()}`, font: { color: '#ffffff', family: 'Inter, sans-serif' } },
             paper_bgcolor: 'rgba(0,0,0,0)',
             plot_bgcolor: 'rgba(0,0,0,0)',
             xaxis: { title: '', color: '#b2b4b8', gridcolor: 'rgba(255,255,255,0.06)', tickfont: { family: 'JetBrains Mono, monospace' }, automargin: false },
@@ -67,7 +67,7 @@ export const ProduitsTab: React.FC<ProduitsTabProps> = ({ produits, marge, crite
       <h3 style={{ marginTop: '30px' }}>Rentabilité Produit</h3>
       
       {marge.top.length > 0 && marge.bottom.length > 0 && (
-        <div className="grid-2">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           <div className="chart-wrapper">
             <Plot
               data={[
@@ -83,7 +83,7 @@ export const ProduitsTab: React.FC<ProduitsTabProps> = ({ produits, marge, crite
                 }
               ]}
               layout={{
-                title: { text: 'TOP MARGES', font: { color: '#00d893', family: 'Inter, sans-serif' } },
+                title: { text: 'MEILLEURES MARGES', font: { color: '#34d399', family: 'Inter, sans-serif' } },
                 paper_bgcolor: 'rgba(0,0,0,0)',
                 plot_bgcolor: 'rgba(0,0,0,0)',
                 xaxis: { title: '', color: '#b2b4b8', gridcolor: 'rgba(255,255,255,0.06)', tickfont: { family: 'JetBrains Mono, monospace' } },

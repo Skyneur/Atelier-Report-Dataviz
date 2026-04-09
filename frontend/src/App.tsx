@@ -134,7 +134,7 @@ function App() {
       >
         <div>
           <h1><Activity size={28} /> Superstore BI</h1>
-          <p>Market Analysis & Business Intelligence</p>
+          <p>Analyse de marché & Intelligence commerciale</p>
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
           <div style={{ color: 'var(--success)', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem', fontWeight: 500, background: 'rgba(0, 216, 147, 0.1)', padding: '6px 12px', borderRadius: '20px' }}>
