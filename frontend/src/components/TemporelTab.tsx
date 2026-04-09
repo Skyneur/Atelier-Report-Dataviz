@@ -78,6 +78,11 @@ export const TemporelTab: React.FC<TemporelTabProps> = ({ temporal, granularite,
           margin: { l: 20, r: 50, t: 30, b: 30 },
           height: 350,
           hovermode: 'x unified',
+          hoverlabel: {
+            bgcolor: '#1e2130',
+            bordercolor: '#2e3347',
+            font: { color: '#ffffff', family: 'JetBrains Mono, monospace', size: 13 }
+          },
           transition: { duration: 500, easing: 'cubic-in-out' }
         }}
         config={{ responsive: true, displayModeBar: false }}
