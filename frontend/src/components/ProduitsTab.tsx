@@ -55,7 +55,7 @@ export const ProduitsTab: React.FC<ProduitsTabProps> = ({ produits, marge, crite
             xaxis: { title: '', color: '#b2b4b8', gridcolor: '#262b33', tickfont: { family: 'JetBrains Mono, monospace' }, automargin: false },
             yaxis: { color: '#ffffff', gridcolor: '#262b33', tickfont: { family: 'Inter, sans-serif' }, automargin: false },
             height: 400,
-            margin: { l: 200, r: 20, t: 40, b: 40 },
+            margin: { l: 280, r: 20, t: 40, b: 40 },
             uirevision: 'produits-top'
           }}
           useResizeHandler
@@ -89,7 +89,7 @@ export const ProduitsTab: React.FC<ProduitsTabProps> = ({ produits, marge, crite
                 xaxis: { title: '', color: '#b2b4b8', gridcolor: '#262b33', tickfont: { family: 'JetBrains Mono, monospace' } },
                 yaxis: { color: '#ffffff', tickfont: { family: 'Inter, sans-serif' }, automargin: false },
                 height: 350,
-                margin: { l: 150, t: 40 },
+                margin: { l: 220, t: 40 },
                 transition: { duration: 500, easing: 'cubic-in-out' }
               }}
               useResizeHandler
@@ -118,7 +118,7 @@ export const ProduitsTab: React.FC<ProduitsTabProps> = ({ produits, marge, crite
                 xaxis: { title: '', color: '#b2b4b8', gridcolor: '#262b33' },
                 yaxis: { color: '#ffffff', automargin: false },
                 height: 350,
-                margin: { l: 150, t: 40 },
+                margin: { l: 220, t: 40 },
                 transition: { duration: 500, easing: 'cubic-in-out' }
               }}
               useResizeHandler
