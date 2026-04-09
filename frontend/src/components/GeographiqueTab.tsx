@@ -19,8 +19,9 @@ export const GeographiqueTab: React.FC<GeographiqueTabProps> = ({ geo }) => {
                 y: geo.map(g => g.ca),
                 marker: {
                   color: geo.map(g => g.ca),
-                  colorscale: [[0, '#0b1426'], [1, '#1199fa']] // Dark to Blue
-                },
+                  colorscale: [[0, '#0b1426'], [1, '#1199fa']],
+                  cornerradius: 4
+                } as object,
                 text: geo.map(g => `${(g.ca/1000).toFixed(0)}k`),
                 textposition: 'outside',
                 textfont: { color: '#b2b4b8' }
@@ -35,6 +36,7 @@ export const GeographiqueTab: React.FC<GeographiqueTabProps> = ({ geo }) => {
               height: 400,
               transition: { duration: 500, easing: 'cubic-in-out' }
             }}
+            useResizeHandler
             config={{ responsive: true, displayModeBar: false }}
             style={{ width: '100%' }}
           />
@@ -62,6 +64,7 @@ export const GeographiqueTab: React.FC<GeographiqueTabProps> = ({ geo }) => {
               transition: { duration: 500, easing: 'cubic-in-out' },
               annotations: [{ text: 'TOTAL', showarrow: false, font: { size: 20, color: '#ffffff' } }]
             }}
+            useResizeHandler
             config={{ responsive: true, displayModeBar: false }}
             style={{ width: '100%' }}
           />

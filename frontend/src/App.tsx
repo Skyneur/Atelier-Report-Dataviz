@@ -49,9 +49,6 @@ function App() {
 
   const [activeTab, setActiveTab] = useState<'produits' | 'geo'>('produits');
 
-  // Clé qui change à chaque rechargement de données → force le re-mount des animations
-  const dataKey = JSON.stringify(filtres) + granularite;
-
   // Chargement initial
   useEffect(() => {
     const init = async () => {
@@ -153,10 +150,9 @@ function App() {
         onChange={setFiltres}
       />
 
-      {/* KPI Cards — stagger + re-mount sur changement de données */}
+      {/* KPI Cards */}
       <motion.div
         className="section"
-        key={`kpi-${dataKey}`}
         variants={staggerContainer}
         initial="hidden"
         animate="visible"
@@ -167,7 +163,6 @@ function App() {
       {/* Dashboard Grid */}
       <motion.div
         className="dashboard-grid"
-        key={`grid-${dataKey}`}
         variants={staggerContainer}
         initial="hidden"
         animate="visible"
@@ -187,7 +182,6 @@ function App() {
       {/* Bottom Grid */}
       <motion.div
         className="layout-grid-bottom"
-        key={`bottom-${dataKey}`}
         variants={staggerContainer}
         initial="hidden"
         animate="visible"
@@ -216,7 +210,7 @@ function App() {
             </button>
           </div>
 
-          <div className="tab-content" style={{marginTop:'20px'}}>
+          <div className="tab-content" style={{marginTop:'20px', position:'relative', overflow:'hidden'}}>
             <AnimatePresence mode="wait">
               {activeTab === 'produits' && (
                 <motion.div

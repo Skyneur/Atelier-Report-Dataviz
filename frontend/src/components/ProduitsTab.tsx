@@ -40,8 +40,9 @@ export const ProduitsTab: React.FC<ProduitsTabProps> = ({ produits, marge, crite
               y: produits.map(p => p.produit),
               orientation: 'h',
               marker: {
-                color: '#1199fa' // Crypto Blue
-              },
+                color: '#1199fa',
+                cornerradius: 4
+              } as object,
               text: produits.map(p => String(p[critere])),
               textposition: 'auto',
               textfont: { color: '#ffffff', family: 'JetBrains Mono, monospace' }
@@ -57,6 +58,7 @@ export const ProduitsTab: React.FC<ProduitsTabProps> = ({ produits, marge, crite
             margin: { l: 200, r: 20, t: 40, b: 40 },
             transition: { duration: 500, easing: 'cubic-in-out' }
           }}
+          useResizeHandler
           config={{ responsive: true, displayModeBar: false }}
           style={{ width: '100%' }}
         />
@@ -74,7 +76,7 @@ export const ProduitsTab: React.FC<ProduitsTabProps> = ({ produits, marge, crite
                   x: marge.top.map(p => p.marge_pct),
                   y: marge.top.map(p => p.produit),
                   orientation: 'h',
-                  marker: { color: '#00d893' }, // Success green
+                  marker: { color: '#00d893', cornerradius: 4 } as object,
                   text: marge.top.map(p => `${p.marge_pct.toFixed(2)}%`),
                   textposition: 'auto',
                   textfont: { family: 'JetBrains Mono, monospace' }
@@ -90,7 +92,8 @@ export const ProduitsTab: React.FC<ProduitsTabProps> = ({ produits, marge, crite
                 margin: { l: 150, t: 40 },
                 transition: { duration: 500, easing: 'cubic-in-out' }
               }}
-              config={{ responsive: true, displayModeBar: false }}
+              useResizeHandler
+          config={{ responsive: true, displayModeBar: false }}
               style={{ width: '100%' }}
             />
           </div>
@@ -103,7 +106,7 @@ export const ProduitsTab: React.FC<ProduitsTabProps> = ({ produits, marge, crite
                   x: marge.bottom.map(p => p.marge_pct),
                   y: marge.bottom.map(p => p.produit),
                   orientation: 'h',
-                  marker: { color: '#ff4d52' }, // Danger red
+                  marker: { color: '#ff4d52', cornerradius: 4 } as object,
                   text: marge.bottom.map(p => `${p.marge_pct.toFixed(2)}%`),
                   textposition: 'auto'
                 }
@@ -118,7 +121,8 @@ export const ProduitsTab: React.FC<ProduitsTabProps> = ({ produits, marge, crite
                 margin: { l: 150, t: 40 },
                 transition: { duration: 500, easing: 'cubic-in-out' }
               }}
-              config={{ responsive: true, displayModeBar: false }}
+              useResizeHandler
+          config={{ responsive: true, displayModeBar: false }}
               style={{ width: '100%' }}
             />
           </div>
