@@ -40,7 +40,7 @@ export const ProduitsTab: React.FC<ProduitsTabProps> = ({ produits, marge, crite
               y: produits.map(p => p.produit),
               orientation: 'h',
               marker: {
-                color: '#1199fa',
+                color: produits.map((_, i) => `rgba(96, 165, 250, ${1 - i * 0.07})`),
                 cornerradius: 4
               } as object,
               text: produits.map(p => String(p[critere])),
@@ -52,8 +52,8 @@ export const ProduitsTab: React.FC<ProduitsTabProps> = ({ produits, marge, crite
             title: { text: `TOP 10 PERFORMERS (${labels[critere].toUpperCase()})`, font: { color: '#ffffff', family: 'Inter, sans-serif' } },
             paper_bgcolor: 'rgba(0,0,0,0)',
             plot_bgcolor: 'rgba(0,0,0,0)',
-            xaxis: { title: '', color: '#b2b4b8', gridcolor: '#262b33', tickfont: { family: 'JetBrains Mono, monospace' }, automargin: false },
-            yaxis: { color: '#ffffff', gridcolor: '#262b33', tickfont: { family: 'Inter, sans-serif' }, automargin: false },
+            xaxis: { title: '', color: '#b2b4b8', gridcolor: 'rgba(255,255,255,0.06)', tickfont: { family: 'JetBrains Mono, monospace' }, automargin: false },
+            yaxis: { color: '#ffffff', gridcolor: 'rgba(255,255,255,0.06)', tickfont: { family: 'Inter, sans-serif' }, automargin: false },
             height: 400,
             margin: { l: 280, r: 20, t: 40, b: 40 },
             uirevision: 'produits-top'
@@ -76,7 +76,7 @@ export const ProduitsTab: React.FC<ProduitsTabProps> = ({ produits, marge, crite
                   x: marge.top.map(p => p.marge_pct),
                   y: marge.top.map(p => p.produit),
                   orientation: 'h',
-                  marker: { color: '#00d893', cornerradius: 4 } as object,
+                  marker: { color: '#34d399', cornerradius: 4 } as object,
                   text: marge.top.map(p => `${p.marge_pct.toFixed(2)}%`),
                   textposition: 'auto',
                   textfont: { family: 'JetBrains Mono, monospace' }
@@ -86,7 +86,7 @@ export const ProduitsTab: React.FC<ProduitsTabProps> = ({ produits, marge, crite
                 title: { text: 'TOP MARGES', font: { color: '#00d893', family: 'Inter, sans-serif' } },
                 paper_bgcolor: 'rgba(0,0,0,0)',
                 plot_bgcolor: 'rgba(0,0,0,0)',
-                xaxis: { title: '', color: '#b2b4b8', gridcolor: '#262b33', tickfont: { family: 'JetBrains Mono, monospace' } },
+                xaxis: { title: '', color: '#b2b4b8', gridcolor: 'rgba(255,255,255,0.06)', tickfont: { family: 'JetBrains Mono, monospace' } },
                 yaxis: { color: '#ffffff', tickfont: { family: 'Inter, sans-serif' }, automargin: true },
                 height: 350,
                 margin: { l: 20, t: 40 },
@@ -106,7 +106,7 @@ export const ProduitsTab: React.FC<ProduitsTabProps> = ({ produits, marge, crite
                   x: marge.bottom.map(p => p.marge_pct),
                   y: marge.bottom.map(p => p.produit),
                   orientation: 'h',
-                  marker: { color: '#ff4d52', cornerradius: 4 } as object,
+                  marker: { color: '#fb7185', cornerradius: 4 } as object,
                   text: marge.bottom.map(p => `${p.marge_pct.toFixed(2)}%`),
                   textposition: 'auto'
                 }
@@ -115,7 +115,7 @@ export const ProduitsTab: React.FC<ProduitsTabProps> = ({ produits, marge, crite
                 title: { text: 'FAIBLES MARGES', font: { color: '#ff4d52' } },
                 paper_bgcolor: 'rgba(0,0,0,0)',
                 plot_bgcolor: 'rgba(0,0,0,0)',
-                xaxis: { title: '', color: '#b2b4b8', gridcolor: '#262b33' },
+                xaxis: { title: '', color: '#b2b4b8', gridcolor: 'rgba(255,255,255,0.06)' },
                 yaxis: { color: '#ffffff', automargin: true },
                 height: 350,
                 margin: { l: 20, t: 40 },

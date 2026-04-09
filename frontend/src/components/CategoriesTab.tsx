@@ -19,7 +19,7 @@ export const CategoriesTab: React.FC<CategoriesTabProps> = ({ categories }) => {
             textposition: 'inside',
             hole: 0.7, // Ultra thin donut
             marker: {
-              colors: ['#1199fa', '#00d893', '#ff4d52', '#f0b90b', '#7d5fff']
+              colors: ['#60a5fa', '#34d399', '#fb7185', '#fbbf24', '#a78bfa']
             },
             textfont: { color: '#ffffff', family: 'JetBrains Mono, monospace', size: 14 },
             hoverinfo: 'label+value+percent'

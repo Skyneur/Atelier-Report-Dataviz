@@ -42,9 +42,9 @@ export const TemporelTab: React.FC<TemporelTabProps> = ({ temporal, granularite,
             name: 'CA',
             x: temporal.map(t => t.periode),
             y: temporal.map(t => t.ca),
-            line: { color: '#1199fa', width: 2, shape: 'spline' },
+            line: { color: '#60a5fa', width: 2.5, shape: 'spline' },
             fill: 'tozeroy',
-            fillcolor: 'rgba(17, 153, 250, 0.1)'
+            fillcolor: 'rgba(96, 165, 250, 0.08)'
           },
           {
             type: 'scatter',
@@ -63,15 +63,15 @@ export const TemporelTab: React.FC<TemporelTabProps> = ({ temporal, granularite,
           xaxis: { 
             title: '', 
             color: '#b2b4b8', 
-            gridcolor: 'rgba(255,255,255,0.05)',
+            gridcolor: 'rgba(255,255,255,0.06)',
             showgrid: false,
             tickfont: { family: 'JetBrains Mono, monospace' }
           },
           yaxis: { 
             title: '', 
             color: '#b2b4b8', 
-            gridcolor: 'rgba(255,255,255,0.05)',
-            side: 'right', // Prix à droite comme sur les sites de trading
+            gridcolor: 'rgba(255,255,255,0.06)',
+            side: 'right',
             tickfont: { family: 'JetBrains Mono, monospace' }
           },
           legend: { font: { family: 'Inter, sans-serif', color: '#ffffff' }, orientation: 'h', x: 0, y: 1 },

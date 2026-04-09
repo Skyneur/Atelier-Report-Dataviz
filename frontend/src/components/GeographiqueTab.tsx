@@ -19,7 +19,7 @@ export const GeographiqueTab: React.FC<GeographiqueTabProps> = ({ geo }) => {
                 y: geo.map(g => g.ca),
                 marker: {
                   color: geo.map(g => g.ca),
-                  colorscale: [[0, '#0b1426'], [1, '#1199fa']],
+                  colorscale: [[0, '#0f2444'], [1, '#60a5fa']],
                   cornerradius: 4
                 } as object,
                 text: geo.map(g => `${(g.ca/1000).toFixed(0)}k`),
@@ -31,8 +31,8 @@ export const GeographiqueTab: React.FC<GeographiqueTabProps> = ({ geo }) => {
               title: { text: 'PERFORMANCE RÉGIONALE (CA)', font: { color: '#ffffff', family: 'Inter, sans-serif' } },
               paper_bgcolor: 'rgba(0,0,0,0)',
               plot_bgcolor: 'rgba(0,0,0,0)',
-              xaxis: { color: '#b2b4b8', gridcolor: '#262b33', tickfont: { family: 'Inter, sans-serif' } },
-              yaxis: { color: '#b2b4b8', gridcolor: '#262b33', tickfont: { family: 'JetBrains Mono, monospace' } },
+              xaxis: { color: '#b2b4b8', gridcolor: 'rgba(255,255,255,0.06)', tickfont: { family: 'Inter, sans-serif' } },
+              yaxis: { color: '#b2b4b8', gridcolor: 'rgba(255,255,255,0.06)', tickfont: { family: 'JetBrains Mono, monospace' } },
               height: 400,
               transition: { duration: 500, easing: 'cubic-in-out' }
             }}
@@ -52,7 +52,7 @@ export const GeographiqueTab: React.FC<GeographiqueTabProps> = ({ geo }) => {
                 textinfo: 'percent',
                 textposition: 'inside',
                 hole: 0.6, // Donut styled like crypto portfolio
-                marker: { colors: ['#1199fa', '#00d893', '#ff4d52', '#f0b90b'] }
+                marker: { colors: ['#60a5fa', '#34d399', '#fb7185', '#fbbf24'] }
               }
             ]}
             layout={{
