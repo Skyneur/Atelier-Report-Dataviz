@@ -81,8 +81,89 @@ def load_data() -> pd.DataFrame:
         logger.error(f"❌ Erreur lors du chargement des données : {e}")
         raise HTTPException(status_code=500, detail=f"Erreur de chargement : {str(e)}")
 
+# === TRADUCTIONS ===
+
+REGIONS_FR = {
+    "West": "Ouest",
+    "East": "Est",
+    "Central": "Centre",
+    "South": "Sud"
+}
+
+CATEGORIES_FR = {
+    "Technology": "Technologie",
+    "Furniture": "Mobilier",
+    "Office Supplies": "Fournitures de bureau"
+}
+
+SEGMENTS_FR = {
+    "Consumer": "Particulier",
+    "Corporate": "Entreprise",
+    "Home Office": "Bureau à domicile"
+}
+
+ETATS_FR = {
+    "Alabama": "Alabama",
+    "Alaska": "Alaska",
+    "Arizona": "Arizona",
+    "Arkansas": "Arkansas",
+    "California": "Californie",
+    "Colorado": "Colorado",
+    "Connecticut": "Connecticut",
+    "Delaware": "Delaware",
+    "Florida": "Floride",
+    "Georgia": "Géorgie",
+    "Hawaii": "Hawaï",
+    "Idaho": "Idaho",
+    "Illinois": "Illinois",
+    "Indiana": "Indiana",
+    "Iowa": "Iowa",
+    "Kansas": "Kansas",
+    "Kentucky": "Kentucky",
+    "Louisiana": "Louisiane",
+    "Maine": "Maine",
+    "Maryland": "Maryland",
+    "Massachusetts": "Massachusetts",
+    "Michigan": "Michigan",
+    "Minnesota": "Minnesota",
+    "Mississippi": "Mississippi",
+    "Missouri": "Missouri",
+    "Montana": "Montana",
+    "Nebraska": "Nebraska",
+    "Nevada": "Nevada",
+    "New Hampshire": "New Hampshire",
+    "New Jersey": "New Jersey",
+    "New Mexico": "Nouveau-Mexique",
+    "New York": "New York",
+    "North Carolina": "Caroline du Nord",
+    "North Dakota": "Dakota du Nord",
+    "Ohio": "Ohio",
+    "Oklahoma": "Oklahoma",
+    "Oregon": "Oregon",
+    "Pennsylvania": "Pennsylvanie",
+    "Rhode Island": "Rhode Island",
+    "South Carolina": "Caroline du Sud",
+    "South Dakota": "Dakota du Sud",
+    "Tennessee": "Tennessee",
+    "Texas": "Texas",
+    "Utah": "Utah",
+    "Vermont": "Vermont",
+    "Virginia": "Virginie",
+    "Washington": "Washington",
+    "West Virginia": "Virginie-Occidentale",
+    "Wisconsin": "Wisconsin",
+    "Wyoming": "Wyoming",
+    "District of Columbia": "District de Columbia"
+}
+
 # Chargement des données au démarrage de l'application
 df = load_data()
+
+# Application des traductions
+df['Region'] = df['Region'].map(REGIONS_FR).fillna(df['Region'])
+df['Category'] = df['Category'].map(CATEGORIES_FR).fillna(df['Category'])
+df['Segment'] = df['Segment'].map(SEGMENTS_FR).fillna(df['Segment'])
+df['State'] = df['State'].map(ETATS_FR).fillna(df['State'])
 
 # === MODÈLES PYDANTIC (pour la validation des réponses) ===
 
