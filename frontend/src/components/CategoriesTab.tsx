@@ -36,6 +36,7 @@ export const CategoriesTab: React.FC<CategoriesTabProps> = ({ categories }) => {
           },
           margin: { t: 40, b: 20, l: 20, r: 20 },
           height: 350,
+          transition: { duration: 500, easing: 'cubic-in-out' },
           annotations: [{ 
             text: 'VENTES', 
             showarrow: false, 

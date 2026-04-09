@@ -32,7 +32,8 @@ export const GeographiqueTab: React.FC<GeographiqueTabProps> = ({ geo }) => {
               plot_bgcolor: 'rgba(0,0,0,0)',
               xaxis: { color: '#b2b4b8', gridcolor: '#262b33', tickfont: { family: 'Inter, sans-serif' } },
               yaxis: { color: '#b2b4b8', gridcolor: '#262b33', tickfont: { family: 'JetBrains Mono, monospace' } },
-              height: 400
+              height: 400,
+              transition: { duration: 500, easing: 'cubic-in-out' }
             }}
             config={{ responsive: true, displayModeBar: false }}
             style={{ width: '100%' }}
@@ -58,6 +59,7 @@ export const GeographiqueTab: React.FC<GeographiqueTabProps> = ({ geo }) => {
               plot_bgcolor: 'rgba(0,0,0,0)',
               legend: { font: { color: '#ffffff' } },
               height: 400,
+              transition: { duration: 500, easing: 'cubic-in-out' },
               annotations: [{ text: 'TOTAL', showarrow: false, font: { size: 20, color: '#ffffff' } }]
             }}
             config={{ responsive: true, displayModeBar: false }}

@@ -54,7 +54,8 @@ export const ProduitsTab: React.FC<ProduitsTabProps> = ({ produits, marge, crite
             xaxis: { title: '', color: '#b2b4b8', gridcolor: '#262b33', tickfont: { family: 'JetBrains Mono, monospace' } },
             yaxis: { automargin: true, color: '#ffffff', gridcolor: '#262b33', tickfont: { family: 'Inter, sans-serif' } },
             height: 400,
-            margin: { l: 200, r: 20, t: 40, b: 40 }
+            margin: { l: 200, r: 20, t: 40, b: 40 },
+            transition: { duration: 500, easing: 'cubic-in-out' }
           }}
           config={{ responsive: true, displayModeBar: false }}
           style={{ width: '100%' }}
@@ -86,7 +87,8 @@ export const ProduitsTab: React.FC<ProduitsTabProps> = ({ produits, marge, crite
                 xaxis: { title: '', color: '#b2b4b8', gridcolor: '#262b33', tickfont: { family: 'JetBrains Mono, monospace' } },
                 yaxis: { automargin: true, color: '#ffffff', tickfont: { family: 'Inter, sans-serif' } },
                 height: 350,
-                margin: { l: 150, t: 40 }
+                margin: { l: 150, t: 40 },
+                transition: { duration: 500, easing: 'cubic-in-out' }
               }}
               config={{ responsive: true, displayModeBar: false }}
               style={{ width: '100%' }}
@@ -113,7 +115,8 @@ export const ProduitsTab: React.FC<ProduitsTabProps> = ({ produits, marge, crite
                 xaxis: { title: '', color: '#b2b4b8', gridcolor: '#262b33' },
                 yaxis: { automargin: true, color: '#ffffff' },
                 height: 350,
-                margin: { l: 150, t: 40 }
+                margin: { l: 150, t: 40 },
+                transition: { duration: 500, easing: 'cubic-in-out' }
               }}
               config={{ responsive: true, displayModeBar: false }}
               style={{ width: '100%' }}

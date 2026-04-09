@@ -52,7 +52,7 @@ export const TemporelTab: React.FC<TemporelTabProps> = ({ temporal, granularite,
             name: 'Trend (SMA)',
             x: temporal.map(t => t.periode),
             y: sma,
-            line: { color: 'rgba(255,255,255,0.2)', width: 1, dash: 'dot' },
+            line: { color: 'rgba(255, 200, 80, 0.85)', width: 2, dash: 'dash' },
             hoverinfo: 'skip'
           }
         ]}
@@ -76,8 +76,9 @@ export const TemporelTab: React.FC<TemporelTabProps> = ({ temporal, granularite,
           },
           legend: { font: { family: 'Inter, sans-serif', color: '#ffffff' }, orientation: 'h', x: 0, y: 1 },
           margin: { l: 20, r: 50, t: 30, b: 30 },
-          height: 350, // Fixed height for alignment
-          hovermode: 'x unified'
+          height: 350,
+          hovermode: 'x unified',
+          transition: { duration: 500, easing: 'cubic-in-out' }
         }}
         config={{ responsive: true, displayModeBar: false }}
         style={{ width: '100%', height: '100%' }}
