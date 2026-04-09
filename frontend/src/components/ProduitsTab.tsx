@@ -52,11 +52,11 @@ export const ProduitsTab: React.FC<ProduitsTabProps> = ({ produits, marge, crite
             title: { text: `TOP 10 PERFORMERS (${labels[critere].toUpperCase()})`, font: { color: '#ffffff', family: 'Inter, sans-serif' } },
             paper_bgcolor: 'rgba(0,0,0,0)',
             plot_bgcolor: 'rgba(0,0,0,0)',
-            xaxis: { title: '', color: '#b2b4b8', gridcolor: '#262b33', tickfont: { family: 'JetBrains Mono, monospace' } },
-            yaxis: { automargin: true, color: '#ffffff', gridcolor: '#262b33', tickfont: { family: 'Inter, sans-serif' } },
+            xaxis: { title: '', color: '#b2b4b8', gridcolor: '#262b33', tickfont: { family: 'JetBrains Mono, monospace' }, automargin: false },
+            yaxis: { color: '#ffffff', gridcolor: '#262b33', tickfont: { family: 'Inter, sans-serif' }, automargin: false },
             height: 400,
             margin: { l: 200, r: 20, t: 40, b: 40 },
-            transition: { duration: 500, easing: 'cubic-in-out' }
+            uirevision: 'produits-top'
           }}
           useResizeHandler
           config={{ responsive: true, displayModeBar: false }}
@@ -87,7 +87,7 @@ export const ProduitsTab: React.FC<ProduitsTabProps> = ({ produits, marge, crite
                 paper_bgcolor: 'rgba(0,0,0,0)',
                 plot_bgcolor: 'rgba(0,0,0,0)',
                 xaxis: { title: '', color: '#b2b4b8', gridcolor: '#262b33', tickfont: { family: 'JetBrains Mono, monospace' } },
-                yaxis: { automargin: true, color: '#ffffff', tickfont: { family: 'Inter, sans-serif' } },
+                yaxis: { color: '#ffffff', tickfont: { family: 'Inter, sans-serif' }, automargin: false },
                 height: 350,
                 margin: { l: 150, t: 40 },
                 transition: { duration: 500, easing: 'cubic-in-out' }
@@ -116,7 +116,7 @@ export const ProduitsTab: React.FC<ProduitsTabProps> = ({ produits, marge, crite
                 paper_bgcolor: 'rgba(0,0,0,0)',
                 plot_bgcolor: 'rgba(0,0,0,0)',
                 xaxis: { title: '', color: '#b2b4b8', gridcolor: '#262b33' },
-                yaxis: { automargin: true, color: '#ffffff' },
+                yaxis: { color: '#ffffff', automargin: false },
                 height: 350,
                 margin: { l: 150, t: 40 },
                 transition: { duration: 500, easing: 'cubic-in-out' }
