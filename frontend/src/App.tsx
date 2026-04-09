@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ShoppingCart, Map, Activity } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { FiltersPanel } from './components/FiltersPanel';
 import { KPICards } from './components/KPICards';
 import { KPIDecision } from './components/KPIDecision';
@@ -8,6 +9,7 @@ import { CategoriesTab } from './components/CategoriesTab';
 import { TemporelTab } from './components/TemporelTab';
 import { GeographiqueTab } from './components/GeographiqueTab';
 import { apiService } from './services/api';
+import { staggerContainer, fadeUpItem, tabEnter, fadeSection } from './animations';
 import type {
   Filtres,
   ValeursFiltres,
@@ -24,30 +26,32 @@ import type {
 function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   // Filtres
   const [filtres, setFiltres] = useState<Filtres>({});
   const [valeursFiltres, setValeursFiltres] = useState<ValeursFiltres | null>(null);
-  
+
   // KPI
   const [kpiGlobaux, setKpiGlobaux] = useState<KPIGlobaux | null>(null);
   const [comparaison, setComparaison] = useState<ComparaisonData | null>(null);
   const [fidelite, setFidelite] = useState<FideliteClients | null>(null);
   const [marge, setMarge] = useState<MargeProduits | null>(null);
-  
+
   // Visualisations
   const [produits, setProduits] = useState<ProduitTop[]>([]);
   const [categories, setCategories] = useState<CategoriePerf[]>([]);
   const [temporal, setTemporal] = useState<EvolutionTemporelle[]>([]);
   const [geo, setGeo] = useState<PerformanceGeo[]>([]);
-  
+
   // Paramètres
   const [critereProduit, setCritereProduit] = useState<'ca' | 'profit' | 'quantite'>('ca');
   const [granularite, setGranularite] = useState<'jour' | 'mois' | 'annee'>('mois');
-  
-  // Only two tabs now for the Detailed view
+
   const [activeTab, setActiveTab] = useState<'produits' | 'geo'>('produits');
-  
+
+  // Clé qui change à chaque rechargement de données → force le re-mount des animations
+  const dataKey = JSON.stringify(filtres) + granularite;
+
   // Chargement initial
   useEffect(() => {
     const init = async () => {
@@ -67,11 +71,11 @@ function App() {
     };
     init();
   }, []);
-  
+
   // Chargement des données selon les filtres
   useEffect(() => {
     if (!valeursFiltres) return;
-    
+
     const loadData = async () => {
       try {
         const [
@@ -93,7 +97,7 @@ function App() {
           apiService.getEvolutionTemporelle(granularite, filtres),
           apiService.getPerformanceGeo(filtres)
         ]);
-        
+
         setKpiGlobaux(kpiData);
         setComparaison(compData);
         setFidelite(fidData);
@@ -106,25 +110,31 @@ function App() {
         setError(`Erreur lors du chargement des données: ${err}`);
       }
     };
-    
+
     loadData();
   }, [filtres, critereProduit, granularite, valeursFiltres]);
-  
+
   if (loading) {
     return <div className="loading">Chargement des données...</div>;
   }
-  
+
   if (error) {
     return <div className="error">{error}</div>;
   }
-  
+
   if (!valeursFiltres || !kpiGlobaux || !comparaison || !fidelite || !marge) {
     return <div className="loading">Préparation...</div>;
   }
-  
+
   return (
     <div className="container">
-      <div className="header">
+      {/* Header */}
+      <motion.div
+        className="header"
+        variants={fadeSection}
+        initial="hidden"
+        animate="visible"
+      >
         <div>
           <h1><Activity size={28} /> Superstore BI</h1>
           <p>Market Analysis & Business Intelligence</p>
@@ -135,75 +145,111 @@ function App() {
             Système opérationnel
           </div>
         </div>
-      </div>
-      
+      </motion.div>
+
       <FiltersPanel
         filtres={filtres}
         valeursFiltres={valeursFiltres}
         onChange={setFiltres}
       />
-      
-      <div className="section">
+
+      {/* KPI Cards — stagger + re-mount sur changement de données */}
+      <motion.div
+        className="section"
+        key={`kpi-${dataKey}`}
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+      >
         <KPICards data={kpiGlobaux} />
-      </div>
-      
-      {/* Main Analysis Grid */}
-      <div className="dashboard-grid">
-        <div className="chart-panel big-chart">
-           <TemporelTab
+      </motion.div>
+
+      {/* Dashboard Grid */}
+      <motion.div
+        className="dashboard-grid"
+        key={`grid-${dataKey}`}
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+      >
+        <motion.div className="chart-panel big-chart" variants={fadeUpItem}>
+          <TemporelTab
             temporal={temporal}
             granularite={granularite}
             onGranulariteChange={setGranularite}
           />
-        </div>
-        <div className="chart-panel side-chart">
-           <CategoriesTab categories={categories} />
-        </div>
-      </div>
-      
-      {/* Secondary Grid: Insights + Details */}
-      <div className="layout-grid-bottom">
-        <div className="insights-panel">
+        </motion.div>
+        <motion.div className="chart-panel side-chart" variants={fadeUpItem}>
+          <CategoriesTab categories={categories} />
+        </motion.div>
+      </motion.div>
+
+      {/* Bottom Grid */}
+      <motion.div
+        className="layout-grid-bottom"
+        key={`bottom-${dataKey}`}
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+      >
+        <motion.div className="insights-panel" variants={fadeUpItem}>
           <KPIDecision
             comparaison={comparaison}
             fidelite={fidelite}
             marge={marge}
           />
-        </div>
-        
-        <div className="details-panel">
-           <div className="tabs-header">
-              <button 
-                className={`tab ${activeTab === 'produits' ? 'active' : ''}`}
-                onClick={() => setActiveTab('produits')}
-              >
-                <ShoppingCart size={16} /> Top Produits
-              </button>
-              <button 
-                className={`tab ${activeTab === 'geo' ? 'active' : ''}`}
-                onClick={() => setActiveTab('geo')}
-              >
-                <Map size={16} /> Géographie
-              </button>
-           </div>
-           
-           <div className="tab-content" style={{marginTop:'20px'}}>
+        </motion.div>
+
+        <motion.div className="details-panel" variants={fadeUpItem}>
+          <div className="tabs-header">
+            <button
+              className={`tab ${activeTab === 'produits' ? 'active' : ''}`}
+              onClick={() => setActiveTab('produits')}
+            >
+              <ShoppingCart size={16} /> Top Produits
+            </button>
+            <button
+              className={`tab ${activeTab === 'geo' ? 'active' : ''}`}
+              onClick={() => setActiveTab('geo')}
+            >
+              <Map size={16} /> Géographie
+            </button>
+          </div>
+
+          <div className="tab-content" style={{marginTop:'20px'}}>
+            <AnimatePresence mode="wait">
               {activeTab === 'produits' && (
-                <ProduitsTab
-                  produits={produits}
-                  marge={marge}
-                  critere={critereProduit}
-                  onCritereChange={setCritereProduit}
-                />
+                <motion.div
+                  key="produits"
+                  variants={tabEnter}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                >
+                  <ProduitsTab
+                    produits={produits}
+                    marge={marge}
+                    critere={critereProduit}
+                    onCritereChange={setCritereProduit}
+                  />
+                </motion.div>
               )}
-              
               {activeTab === 'geo' && (
-                <GeographiqueTab geo={geo} />
+                <motion.div
+                  key="geo"
+                  variants={tabEnter}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                >
+                  <GeographiqueTab geo={geo} />
+                </motion.div>
               )}
-           </div>
-        </div>
-      </div>
-      
+            </AnimatePresence>
+          </div>
+        </motion.div>
+      </motion.div>
+
       <div className="footer">
         <p>SUPERSTORE BI DASHBOARD v2.0 • POWERED BY REACT & PYTHON</p>
       </div>

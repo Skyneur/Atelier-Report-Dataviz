@@ -1,6 +1,8 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { Filter, Calendar, Package, MapPin, Users } from 'lucide-react';
 import type { Filtres, ValeursFiltres } from '../types';
+import { fadeSection } from '../animations';
 
 interface FiltersPanelProps {
   filtres: Filtres;
@@ -14,9 +16,14 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({ filtres, valeursFilt
   };
 
   return (
-    <div className="filters">
+    <motion.div
+      className="filters"
+      variants={fadeSection}
+      initial="hidden"
+      animate="visible"
+    >
       <h3><Filter size={18} /> Configuration du Dataset</h3>
-      
+
       <div className="filter-grid">
         <div className="filter-group">
           <label><Calendar size={12} style={{display:'inline', marginRight:4}} /> Période (Début)</label>
@@ -28,7 +35,7 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({ filtres, valeursFilt
             onChange={(e) => handleChange('date_debut', e.target.value)}
           />
         </div>
-        
+
         <div className="filter-group">
           <label><Calendar size={12} style={{display:'inline', marginRight:4}} /> Période (Fin)</label>
           <input
@@ -39,7 +46,7 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({ filtres, valeursFilt
             onChange={(e) => handleChange('date_fin', e.target.value)}
           />
         </div>
-        
+
         <div className="filter-group">
           <label><Package size={12} style={{display:'inline', marginRight:4}} /> Catégorie</label>
           <select
@@ -52,7 +59,7 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({ filtres, valeursFilt
             ))}
           </select>
         </div>
-        
+
         <div className="filter-group">
           <label><MapPin size={12} style={{display:'inline', marginRight:4}} /> Région</label>
           <select
@@ -65,7 +72,7 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({ filtres, valeursFilt
             ))}
           </select>
         </div>
-        
+
         <div className="filter-group">
           <label><Users size={12} style={{display:'inline', marginRight:4}} /> Segment</label>
           <select
@@ -79,6 +86,6 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({ filtres, valeursFilt
           </select>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };

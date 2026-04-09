@@ -1,6 +1,8 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { TrendingUp, AlertTriangle, Wallet, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import type { ComparaisonData, FideliteClients, MargeProduits } from '../types';
+import { staggerContainer, fadeUpItem } from '../animations';
 
 interface KPIDecisionProps {
   comparaison: ComparaisonData;
@@ -11,17 +13,21 @@ interface KPIDecisionProps {
 export const KPIDecision: React.FC<KPIDecisionProps> = ({ comparaison, fidelite, marge }) => {
   const evolution = comparaison.latest;
   const evolPct = evolution.evolution_pct;
-  
+
   return (
     <div className="kpi-card" style={{height: '100%'}}>
       <h3 style={{fontSize:'1rem', marginBottom:'20px', display:'flex', alignItems:'center', gap:'10px'}}>
         <span style={{width:'8px', height:'8px', background:'var(--accent-primary)', borderRadius:'50%', display:'inline-block'}}></span>
         Market Insights
       </h3>
-      
-      <div style={{display:'flex', flexDirection:'column', gap:'24px'}}>
-        {/* Trend Item */}
-        <div style={{display:'flex', gap:'16px', alignItems:'start'}}>
+
+      <motion.div
+        style={{display:'flex', flexDirection:'column', gap:'24px'}}
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+      >
+        <motion.div variants={fadeUpItem} style={{display:'flex', gap:'16px', alignItems:'start'}}>
           <div style={{
             background: evolPct >= 0 ? 'rgba(0, 216, 147, 0.1)' : 'rgba(255, 77, 82, 0.1)',
             padding: '10px',
@@ -42,11 +48,10 @@ export const KPIDecision: React.FC<KPIDecisionProps> = ({ comparaison, fidelite,
               {evolPct > 0 ? `Le CA progresse de +${evolPct}%` : `Recul de ${evolPct}% vs période préc.`}
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Product Item */}
         {marge.top.length > 0 && (
-          <div style={{display:'flex', gap:'16px', alignItems:'start'}}>
+          <motion.div variants={fadeUpItem} style={{display:'flex', gap:'16px', alignItems:'start'}}>
             <div style={{
               background: 'rgba(17, 153, 250, 0.1)',
               padding: '10px',
@@ -67,11 +72,10 @@ export const KPIDecision: React.FC<KPIDecisionProps> = ({ comparaison, fidelite,
                 Marge exceptionnelle de {marge.top[0].marge_pct.toFixed(1)}%
               </div>
             </div>
-          </div>
+          </motion.div>
         )}
 
-        {/* Retention Item */}
-        <div style={{display:'flex', gap:'16px', alignItems:'start'}}>
+        <motion.div variants={fadeUpItem} style={{display:'flex', gap:'16px', alignItems:'start'}}>
           <div style={{
             background: fidelite.repeat_rate_pct < 30 ? 'rgba(255, 77, 82, 0.1)' : 'rgba(0, 216, 147, 0.1)',
             padding: '10px',
@@ -92,8 +96,8 @@ export const KPIDecision: React.FC<KPIDecisionProps> = ({ comparaison, fidelite,
               {fidelite.repeat_rate_pct < 30 ? 'Niveau critique' : 'Fidélisation saine'}
             </div>
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 };
