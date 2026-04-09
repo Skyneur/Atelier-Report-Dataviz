@@ -28,8 +28,8 @@ app = FastAPI(
 # Configuration CORS pour permettre les appels depuis Streamlit
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # En production, spécifier l'URL exacte de Streamlit
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
