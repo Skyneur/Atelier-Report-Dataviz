@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { TrendingUp, AlertTriangle, Wallet, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import type { ComparaisonData, FideliteClients, MargeProduits } from '../types';
 import { staggerContainer, fadeUpItem } from '../animations';
+import { InfoTooltip } from './InfoTooltip';
 
 interface KPIDecisionProps {
   comparaison: ComparaisonData;
@@ -42,7 +43,10 @@ export const KPIDecision: React.FC<KPIDecisionProps> = ({ comparaison, fidelite,
             {evolPct >= 0 ? <ArrowUpRight size={20} /> : <ArrowDownRight size={20} />}
           </div>
           <div>
-            <div style={{fontSize:'0.85rem', color:'var(--text-secondary)', marginBottom:'2px'}}>Tendance Globale</div>
+            <div style={{fontSize:'0.85rem', color:'var(--text-secondary)', marginBottom:'2px', display:'flex', alignItems:'center', gap:'6px'}}>
+              Tendance Globale
+              <InfoTooltip text={evolPct > 0 ? `Le CA progresse de +${evolPct}% vs période précédente. Cette dynamique positive suggère d'accélérer les investissements sur les catégories en tête de croissance.` : `Recul de ${Math.abs(evolPct)}% vs période précédente. Identifier les segments en perte de vitesse et revoir la politique promotionnelle avant la prochaine période.`} />
+            </div>
             <div style={{fontWeight:600, fontSize:'1rem', fontFamily:'var(--font-mono)'}}>{evolPct > 0 ? 'Croissance soutenue' : 'Correction du marché'}</div>
             <div style={{fontSize:'0.85rem', color:'var(--text-secondary)', marginTop:'4px'}}>
               {evolPct > 0 ? `Le CA progresse de +${evolPct}%` : `Recul de ${evolPct}% vs période préc.`}
@@ -66,7 +70,10 @@ export const KPIDecision: React.FC<KPIDecisionProps> = ({ comparaison, fidelite,
               <Wallet size={20} />
             </div>
             <div>
-              <div style={{fontSize:'0.85rem', color:'var(--text-secondary)', marginBottom:'2px'}}>Top Asset</div>
+              <div style={{fontSize:'0.85rem', color:'var(--text-secondary)', marginBottom:'2px', display:'flex', alignItems:'center', gap:'6px'}}>
+                Top Asset
+                <InfoTooltip text={`Ce produit affiche la meilleure marge du catalogue. Opportunité : le mettre en avant dans les recommandations et bundles pour maximiser la rentabilité globale.`} />
+              </div>
               <div style={{fontWeight:600, fontSize:'1rem', fontFamily:'var(--font-mono)'}}>{marge.top[0].produit.substring(0, 20)}...</div>
               <div style={{fontSize:'0.85rem', color:'var(--text-secondary)', marginTop:'4px'}}>
                 Marge exceptionnelle de {marge.top[0].marge_pct.toFixed(1)}%
@@ -90,7 +97,10 @@ export const KPIDecision: React.FC<KPIDecisionProps> = ({ comparaison, fidelite,
             {fidelite.repeat_rate_pct < 30 ? <AlertTriangle size={20} /> : <TrendingUp size={20} />}
           </div>
           <div>
-            <div style={{fontSize:'0.85rem', color:'var(--text-secondary)', marginBottom:'2px'}}>Rétention</div>
+            <div style={{fontSize:'0.85rem', color:'var(--text-secondary)', marginBottom:'2px', display:'flex', alignItems:'center', gap:'6px'}}>
+              Rétention
+              <InfoTooltip text={fidelite.repeat_rate_pct < 30 ? `Niveau critique : moins d'1 client sur 3 commande à nouveau. Priorité : mettre en place un programme de fidélisation ou des relances post-achat ciblées.` : `Fidélisation saine : les clients reviennent régulièrement. Capitaliser sur cette base en proposant des offres exclusives pour augmenter leur panier moyen.`} />
+            </div>
             <div style={{fontWeight:600, fontSize:'1rem', fontFamily:'var(--font-mono)'}}>{fidelite.repeat_rate_pct}% Repeat Rate</div>
             <div style={{fontSize:'0.85rem', color:'var(--text-secondary)', marginTop:'4px'}}>
               {fidelite.repeat_rate_pct < 30 ? 'Niveau critique' : 'Fidélisation saine'}

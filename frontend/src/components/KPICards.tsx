@@ -4,6 +4,7 @@ import { DollarSign, ShoppingBag, Users, Package, TrendingUp, Wallet, ShoppingCa
 import type { KPIGlobaux } from '../types';
 import { formaterEuro, formaterNombre, formaterPourcentage } from '../utils/formatters';
 import { staggerContainer, fadeUpItem } from '../animations';
+import { InfoTooltip } from './InfoTooltip';
 
 interface KPICardsProps {
   data: KPIGlobaux;
@@ -36,7 +37,10 @@ export const KPICards: React.FC<KPICardsProps> = ({ data }) => {
       <motion.div className="kpi-card" variants={fadeUpItem}>
         <div style={{display:'flex', justifyContent:'space-between', marginBottom:'16px'}}>
           <div className="label" style={{margin:0}}>Chiffre d'Affaires</div>
-          <IconWrapper color="var(--accent-primary)"><DollarSign size={18} /></IconWrapper>
+          <div style={{display:'flex', alignItems:'center', gap:'8px'}}>
+            <InfoTooltip text="Somme totale des ventes sur la période. Une croissance régulière traduit une expansion saine — surveiller les pics saisonniers pour anticiper les besoins logistiques." />
+            <IconWrapper color="var(--accent-primary)"><DollarSign size={18} /></IconWrapper>
+          </div>
         </div>
         <div className="value">{formaterEuro(data.ca_total)}</div>
       </motion.div>
@@ -44,9 +48,12 @@ export const KPICards: React.FC<KPICardsProps> = ({ data }) => {
       <motion.div className="kpi-card" variants={fadeUpItem}>
         <div style={{display:'flex', justifyContent:'space-between', marginBottom:'16px'}}>
           <div className="label" style={{margin:0}}>Profit Net</div>
-          <IconWrapper color={data.profit_total >= 0 ? 'var(--success)' : 'var(--danger)'}>
-            <Wallet size={18} />
-          </IconWrapper>
+          <div style={{display:'flex', alignItems:'center', gap:'8px'}}>
+            <InfoTooltip text="Revenu restant après déduction des coûts. Un profit négatif sur une catégorie signale une politique de remises trop agressive ou des coûts logistiques mal maîtrisés." />
+            <IconWrapper color={data.profit_total >= 0 ? 'var(--success)' : 'var(--danger)'}>
+              <Wallet size={18} />
+            </IconWrapper>
+          </div>
         </div>
         <div className="value" style={{ color: data.profit_total >= 0 ? 'var(--success)' : 'var(--danger)' }}>
           {formaterEuro(data.profit_total)}
@@ -56,7 +63,10 @@ export const KPICards: React.FC<KPICardsProps> = ({ data }) => {
       <motion.div className="kpi-card" variants={fadeUpItem}>
         <div style={{display:'flex', justifyContent:'space-between', marginBottom:'16px'}}>
           <div className="label" style={{margin:0}}>Marge</div>
-          <IconWrapper color="var(--accent-primary)"><TrendingUp size={18} /></IconWrapper>
+          <div style={{display:'flex', alignItems:'center', gap:'8px'}}>
+            <InfoTooltip text="Ratio profit / CA. En dessous de 10%, les coûts opérationnels menacent la viabilité. Au-dessus de 20%, la politique tarifaire est bien positionnée." />
+            <IconWrapper color="var(--accent-primary)"><TrendingUp size={18} /></IconWrapper>
+          </div>
         </div>
         <div className="value">{formaterPourcentage(data.marge_moyenne)}</div>
       </motion.div>
@@ -64,7 +74,10 @@ export const KPICards: React.FC<KPICardsProps> = ({ data }) => {
       <motion.div className="kpi-card" variants={fadeUpItem}>
         <div style={{display:'flex', justifyContent:'space-between', marginBottom:'16px'}}>
           <div className="label" style={{margin:0}}>Commandes</div>
-          <IconWrapper><ShoppingBag size={18} /></IconWrapper>
+          <div style={{display:'flex', alignItems:'center', gap:'8px'}}>
+            <InfoTooltip text="Volume total de commandes uniques. En hausse = acquisition active. Stable = fidélisation efficace. En baisse = signal d'alerte sur l'attractivité de l'offre." />
+            <IconWrapper><ShoppingBag size={18} /></IconWrapper>
+          </div>
         </div>
         <div className="value">{formaterNombre(data.nb_commandes)}</div>
       </motion.div>
@@ -72,7 +85,10 @@ export const KPICards: React.FC<KPICardsProps> = ({ data }) => {
       <motion.div className="kpi-card" variants={fadeUpItem}>
         <div style={{display:'flex', justifyContent:'space-between', marginBottom:'16px'}}>
           <div className="label" style={{margin:0}}>Clients Actifs</div>
-          <IconWrapper><Users size={18} /></IconWrapper>
+          <div style={{display:'flex', alignItems:'center', gap:'8px'}}>
+            <InfoTooltip text="Nombre de clients uniques ayant commandé sur la période. À croiser avec le repeat rate : beaucoup de clients mais peu de récurrence indique une faible fidélisation." />
+            <IconWrapper><Users size={18} /></IconWrapper>
+          </div>
         </div>
         <div className="value">{formaterNombre(data.nb_clients)}</div>
       </motion.div>
@@ -80,7 +96,10 @@ export const KPICards: React.FC<KPICardsProps> = ({ data }) => {
       <motion.div className="kpi-card" variants={fadeUpItem}>
         <div style={{display:'flex', justifyContent:'space-between', marginBottom:'16px'}}>
           <div className="label" style={{margin:0}}>Flux Volume</div>
-          <IconWrapper><Package size={18} /></IconWrapper>
+          <div style={{display:'flex', alignItems:'center', gap:'8px'}}>
+            <InfoTooltip text="Quantité totale d'articles écoulés. Un volume élevé associé à une faible marge peut indiquer une stratégie de volume à risque — vérifier la rentabilité par unité." />
+            <IconWrapper><Package size={18} /></IconWrapper>
+          </div>
         </div>
         <div className="value">{formaterNombre(data.quantite_vendue)}</div>
       </motion.div>
@@ -88,7 +107,10 @@ export const KPICards: React.FC<KPICardsProps> = ({ data }) => {
       <motion.div className="kpi-card" variants={fadeUpItem}>
         <div style={{display:'flex', justifyContent:'space-between', marginBottom:'16px'}}>
           <div className="label" style={{margin:0}}>Panier Moyen</div>
-          <IconWrapper><ShoppingCart size={18} /></IconWrapper>
+          <div style={{display:'flex', alignItems:'center', gap:'8px'}}>
+            <InfoTooltip text="Valeur moyenne d'une commande. Augmenter le panier de 10% via le cross-sell a souvent plus d'impact sur le CA que d'acquérir de nouveaux clients." />
+            <IconWrapper><ShoppingCart size={18} /></IconWrapper>
+          </div>
         </div>
         <div className="value">{formaterEuro(data.panier_moyen)}</div>
       </motion.div>
@@ -96,7 +118,10 @@ export const KPICards: React.FC<KPICardsProps> = ({ data }) => {
       <motion.div className="kpi-card" variants={fadeUpItem}>
         <div style={{display:'flex', justifyContent:'space-between', marginBottom:'16px'}}>
           <div className="label" style={{margin:0}}>Ratio Art/Cmd</div>
-          <IconWrapper><BarChart3 size={18} /></IconWrapper>
+          <div style={{display:'flex', alignItems:'center', gap:'8px'}}>
+            <InfoTooltip text="Nombre moyen d'articles par commande. Un ratio supérieur à 3 indique un comportement d'achat groupé favorable. En dessous de 2, le cross-sell est sous-exploité." />
+            <IconWrapper><BarChart3 size={18} /></IconWrapper>
+          </div>
         </div>
         <div className="value">{articlesParCommande}</div>
       </motion.div>
